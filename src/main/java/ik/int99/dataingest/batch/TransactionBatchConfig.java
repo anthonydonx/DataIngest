@@ -15,6 +15,7 @@ import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.separator.DefaultRecordSeparatorPolicy;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ public class TransactionBatchConfig {
 
     public static final String DELIMITER = "|";
     public static final String[] STR_COL_NAMES = {"accountNumber", "trxAmount", "description", "trxDate", "trxTime", "customerId"};
+    public static final String TRANSACTION_READER = "transactionReader";
 
     @Value("classpath:dataSource.txt")
     private Resource inputFile;
@@ -41,7 +43,7 @@ public class TransactionBatchConfig {
     @Bean
     public FlatFileItemReader<Transaction> transactionReader() {
         return new FlatFileItemReaderBuilder<Transaction>()
-                .name("transactionReader")
+                .name(TRANSACTION_READER)
                 .resource(inputFile)
                 .linesToSkip(1) // Skip header
                 .recordSeparatorPolicy(recordSeparatorPolicy())
@@ -52,7 +54,12 @@ public class TransactionBatchConfig {
     private DefaultLineMapper<Transaction> getLineMapper() {
         DefaultLineMapper<Transaction> lineMapper = new DefaultLineMapper<>();
         lineMapper.setLineTokenizer(getLineTokenizer());
-        lineMapper.setFieldSetMapper(fieldSet -> {
+        lineMapper.setFieldSetMapper(getMapper());
+        return lineMapper;
+    }
+
+    private static FieldSetMapper<Transaction> getMapper() {
+        return fieldSet -> {
             try {
                 Transaction txn = new Transaction();
                 txn.setAccountNumber(fieldSet.readString("accountNumber"));
@@ -66,8 +73,7 @@ public class TransactionBatchConfig {
                 logger.error("Error parsing line: {}", fieldSet.toString(), e);
                 return null; // Skip invalid lines
             }
-        });
-        return lineMapper;
+        };
     }
 
     private DelimitedLineTokenizer getLineTokenizer() {

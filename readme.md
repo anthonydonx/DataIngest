@@ -1,28 +1,18 @@
 # Getting Started
 
-### Reference Documentation
+| TASK                    | STATUS    |
+|-------------------------|-----------|
+| Spring Batch processing | Done      |
+| Liquibase               | Done      |
+| REST API                | Partially |
+| Authentication          | Pending   |
+| Unit Test               | Pending   |
 
-For further reference, please consider the following sections:
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/3.4.4/maven-plugin)
-* [Create an OCI image](https://docs.spring.io/spring-boot/3.4.4/maven-plugin/build-image.html)
-* [Spring Batch](https://docs.spring.io/spring-boot/3.4.4/how-to/batch.html)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/3.4.4/reference/data/sql.html#data.sql.jpa-and-spring-data)
-* [Liquibase Migration](https://docs.spring.io/spring-boot/3.4.4/how-to/data-initialization.html#howto.data-initialization.migration-tool.liquibase)
 
-### Guides
+### API Endpoints
+- **Swagger UI**: [http://localhost:8080/dataingest/swagger-ui/index.html](http://localhost:8080/dataingest/swagger-ui/index.html)
 
-The following guides illustrate how to use some features concretely:
-
-* [Creating a Batch Service](https://spring.io/guides/gs/batch-processing/)
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-
-### Maven Parent overrides
-
-Due to Maven's design, elements are inherited from the parent POM to the project POM.
-While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the
-parent.
-To prevent this, the project POM contains empty overrides for these elements.
-If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
-
+`curl -X 'GET' \
+'http://localhost:8080/dataingest/transaction/v1/transactions?page=0&size=10&sort=id' \
+-H 'accept: */*'`
